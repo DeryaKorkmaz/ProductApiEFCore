@@ -16,6 +16,24 @@ public class ProductsController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("ProductsByCategory/{categoryId}")]
+    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(int categoryId)
+    {
+        var products = await _context.Products
+            .Where(p => p.CategoryId == categoryId)
+            .Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Stock = p.Stock,
+                CategoryId = p.CategoryId
+            })
+            .ToListAsync();
+
+        return products;
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
     {
